@@ -31,23 +31,23 @@ namespace ProArch.CodingTest.Helper
     //                    //Call failover service
     //                    var failoverInvoice = FailoverInvoiceService.GetInvoices(supplierId);
     //                    if ((failoverInvoice.Timestamp - DateTime.Now).TotalDays > 30)
-    //                    {
-    //                        throw new Exception("Data is older than 1 Month");
-    //                    }
-    //                    latestFailureTimeStamp = DateTime.Now;
-    //                }
-    //            }
-    //            catch (Exception ex)
-    //            {
-    //                exceptions.Add(ex);
-    //            }
-    //        }
-    //        throw new AggregateException(exceptions);
-    //    }
+    ////                    {
+    ////                        throw new Exception("Data is older than 1 Month");
+    ////                    }
+    ////                    latestFailureTimeStamp = DateTime.Now;
+    ////                }
+    ////            }
+    ////            catch (Exception ex)
+    ////            {
+    ////                exceptions.Add(ex);
+    ////            }
+    ////        }
+    ////        throw new AggregateException(exceptions);
+    ////    }
 
-    //    private static ExternalInvoice[] GetExternalInvoices(int id)
-    //    {
-    //        return ExternalInvoiceService.GetInvoices(id.ToString());
-    //    }
+    ////    private static ExternalInvoice[] GetExternalInvoices(int id)
+    ////    {
+    ////        return ExternalInvoiceService.GetInvoices(id.ToString());
+    ////    }
     }
 }

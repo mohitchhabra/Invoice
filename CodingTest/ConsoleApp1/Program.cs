@@ -15,8 +15,14 @@ namespace ConsoleApp1
             //for internal
             // var totalSpend =  spend.GetTotalSpend(1);
 
-                //for ext 
-            var totalSpend = spend.GetTotalSpend(2);
+                //for ext Scen positive
+           // var totalSpend = spend.GetTotalSpend(2);
+
+            //for Failover (Ext scn negative)
+           // var totalSpend = spend.GetTotalSpend(2);
+
+            // EXT scb failover posiitve
+            var totalSpend = spend.GetTotalSpend(3);
 
         }
     }

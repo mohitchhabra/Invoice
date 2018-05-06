@@ -1,16 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ProArch.CodingTest.Invoices;
+using ProArch.CodingTest.Summary;
 using ProArch.CodingTest.Suppliers;
 
-namespace ProArch.CodingTest.Invoices
+namespace Test
 {
-    public static class InvoiceRepository
+    [TestClass]
+    public class UnitTest1
     {
-        public static IQueryable<Invoice> Get(Supplier supplier)
+        SpendService spend = new SpendService();
+
+        [TestMethod]
+        public void When_internal_Supplier_Should_Return_Success_Spend_Summary()
+        {   
+            
+            var totalSpend =  spend.GetTotalSpend(1);
+            Assert.IsInstanceOfType( totalSpend, typeof(SpendSummary));
+            Assert.IsNotNull(totalSpend);
+            Assert.IsNotNull(totalSpend.Name);
+            Assert.IsNotNull(totalSpend.Years);
+            Assert.IsTrue(totalSpend.Years.Count >0);
+
+        }
+
+        [TestMethod]
+        public void When_external_Supplier_Should_Return_Success_Spend_Summary()
         {
-            return new List<Invoice>().AsQueryable();
-            //CreateInvoices(supplier).AsQueryable();
+
+            var totalSpend = spend.GetTotalSpend(1);
+            Assert.IsInstanceOfType(totalSpend, typeof(SpendSummary));
+            Assert.IsNotNull(totalSpend);
+            Assert.IsNotNull(totalSpend.Name);
+            Assert.IsNotNull(totalSpend.Years);
+            Assert.IsTrue(totalSpend.Years.Count > 0);
+
         }
 
         private static List<Invoice> CreateInvoices(Supplier supplier)

@@ -4,26 +4,25 @@
     {
         public static Supplier GetById(int id)
         {
-            return  (id == 1 )? GetInternalSuppulier() : GetExternalSuppulier();
-
-
+            return  (id == 1 )? GetInternalSuppulier(id) : GetExternalSuppulier(id);
+            
         }
 
-        private static Supplier GetInternalSuppulier()
+        private static Supplier GetInternalSuppulier(int id)
         {
             return new Supplier
             {
-                Id = 1,
+                Id =id,
                 IsExternal = false,
                 Name = "Mohit"
             };
         }
 
-        private static Supplier GetExternalSuppulier()
+        private static Supplier GetExternalSuppulier(int id)
         {
             return new Supplier
             {
-                Id = 2,
+                Id = id,
                 IsExternal = true,
                 Name = "John"
             };
