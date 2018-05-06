@@ -4,7 +4,7 @@
     {
         public static Supplier GetById(int id)
         {
-            return  (id == 1 )? GetInternalSuppulier() : GetInternalSuppulier();
+            return  (id == 1 )? GetInternalSuppulier() : GetExternalSuppulier();
 
 
         }

@@ -14,11 +14,25 @@ namespace ProArch.CodingTest.Summary
         public SpendSummary GetTotalSpend(int supplierId)
         {
             Supplier sp = SupplierService.GetById(supplierId);
-            ExternalInvoice[] externalInvs;
+            List<ExternalInvoice> externalInvs;
             List<Invoice> invoices = new List<Invoice>();
 
             if (sp.IsExternal)
-            {  
+            {
+                //GetExternalInvoiceShouldruninretry
+               // externalInvs = GetExternalInvoices(sp).ToList(); //This Should be executed as part of retry
+               // externalInvs = createDummyExternalInvoices(); // Todo Remove Dummy Code
+                
+                //Failover 
+                var failoverInvoices = CreateInvoiceFromFailoverInvoice(sp); //Should be executed in failure block of retry
+                failoverInvoices = CreateDummyFailoverInvoices(sp); //To Do Remove this dummy code
+                if (failoverInvoices.Timestamp < DateTime.Now.AddDays(-30))
+                {
+                    throw new Exception("Data is older than 1 Month");
+                }
+                externalInvs = failoverInvoices.Invoices.ToList();
+
+                invoices = CreateInvoiceFromExternalInvoice(externalInvs, sp);
             }
 
             else
@@ -28,6 +42,54 @@ namespace ProArch.CodingTest.Summary
 
          return CreateSpendSummary(invoices, sp);
 
+        }
+
+        private FailoverInvoiceCollection CreateInvoiceFromFailoverInvoice(Supplier supplier)
+        {
+            var failoverInvoices = FailoverInvoiceService.GetInvoices(supplier.Id);
+
+            return failoverInvoices;
+        }
+
+        private FailoverInvoiceCollection CreateDummyFailoverInvoices(Supplier supplier)
+        {
+            return new FailoverInvoiceCollection
+            {
+               Timestamp = (supplier.Id == 2)? DateTime.Now.AddMonths(-2) : DateTime.Now,
+               Invoices = createDummyExternalInvoices().ToArray()
+            };
+        }
+        private List<ExternalInvoice> createDummyExternalInvoices()
+        {
+                return new List<ExternalInvoice>
+                {
+                    new ExternalInvoice()
+                    {
+                        Year = DateTime.Now.AddYears(-2).Year,
+                       TotalAmount = 4000
+                    },  
+                    new ExternalInvoice()
+                    {
+                        Year = DateTime.Now.AddYears(-1).Year,
+                        TotalAmount = 5000
+                    },
+                    new ExternalInvoice()
+                    {
+                        Year = DateTime.Now.AddYears(-2).Year,
+                        TotalAmount = 3000
+                    },
+                    new ExternalInvoice()
+                    {
+                        Year = DateTime.Now.AddYears(-1).Year,
+                        TotalAmount = 2000
+                    },
+                    new ExternalInvoice()
+                    {
+                        Year = DateTime.Now.Year,
+                        TotalAmount = 4000
+                    }
+                };
+            
         }
 
         private SpendSummary CreateSpendSummary(List<Invoice> invoices, Supplier supplier)
@@ -46,9 +108,24 @@ namespace ProArch.CodingTest.Summary
         }
 
 
-        private ExternalInvoice[] GetExternalInvoices(int id)
+        private List<Invoice> CreateInvoiceFromExternalInvoice(List<ExternalInvoice> invoices, Supplier supplier)
         {
-            return ExternalInvoiceService.GetInvoices(id.ToString());
+            var output = invoices.Select(r => new Invoice
+                {
+                    SupplierId = supplier.Id,
+                    InvoiceDate = new DateTime(r.Year, 1, 1),
+                    Amount = r.TotalAmount
+                }
+
+            ).ToList();
+            return output;
         }
+
+        private ExternalInvoice[] GetExternalInvoices(Supplier supplier)
+        {
+            return ExternalInvoiceService.GetInvoices(supplier.Id.ToString());
+        }
+
+
     }
 }
