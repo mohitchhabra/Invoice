@@ -9,8 +9,8 @@ namespace ProArch.CodingTest.Invoices
     {
         public static IQueryable<Invoice> Get(Supplier supplier)
         {
-            return new List<Invoice>().AsQueryable();
-            //CreateInvoices(supplier).AsQueryable();
+             //new List<Invoice>().AsQueryable();
+            return CreateInvoices(supplier).AsQueryable();
         }
 
         private static List<Invoice> CreateInvoices(Supplier supplier)

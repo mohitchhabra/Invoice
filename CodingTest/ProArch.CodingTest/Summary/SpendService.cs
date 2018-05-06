@@ -21,13 +21,9 @@ namespace ProArch.CodingTest.Summary
             {
                 //GetExternalInvoiceShouldruninretry
                 RetryLogic(sp,3);
-                externalInvs = GetExternalInvoices(sp).ToList(); //This Should be executed as part of retry
-                // externalInvs = createDummyExternalInvoices(); // Todo Remove Dummy Code
-
-                //Failover 
-
-
-               
+                //externalInvs = GetExternalInvoices(sp).ToList(); //This Should be executed as part of retry
+                 externalInvs = createDummyExternalInvoices(); // Todo Remove Dummy Code
+                invoices = CreateInvoiceFromExternalInvoice(externalInvs, sp);
             }
 
             else
@@ -125,7 +121,7 @@ namespace ProArch.CodingTest.Summary
 
         private void RetryLogic( Supplier supplier, int maxAttemptCount = 3)
         {
-            DateTime latestFailureTimeStamp = DateTime.MinValue;
+            DateTime latestFailureTimeStamp = DateTime.MaxValue;
             List<ExternalInvoice> externalInvs;
             var exceptions = new List<Exception>();
             bool maxRetryReached = false;
@@ -134,6 +130,7 @@ namespace ProArch.CodingTest.Summary
             {
                 try
                 {
+                    throw  new Exception();
                     externalInvs = GetExternalInvoices(supplier).ToList();
                     break; // success!
                 }
@@ -158,7 +155,7 @@ namespace ProArch.CodingTest.Summary
             failoverInvoices = CreateDummyFailoverInvoices(supplier); //To Do Remove this dummy code
             if (failoverInvoices.Timestamp < DateTime.Now.AddDays(-30))
             {
-                throw new Exception("Data is older than 1 Month");
+                throw new DataNotSyncedException("Data is older than 1 Month");
             }
 
             externalInvs = failoverInvoices.Invoices.ToList();
